@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>List of friends</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<body>
+<div class="container">
+    <h1>Filter</h1>
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="form-group">
+                <select id="users-select" class="custom-select">
+                    <option value="-1">Choose age</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-sm-5 offset-sm-1">
+                <h3>Filter by age</h3>
+                <div id="res"></div>
+        </div>
+    </div>
+
+</div>
+<script>
+
+ /*
+1.  В элемент select вывести сгруппированный возраст
+    пользователей
+То есть у нас 9 пользователей и их возраст 20, 30, 40
+Элемент select должен получится таким
+
+<select>
+    <option value="-1">Choose age</option>
+    <option value="20">20</option>
+    <option value="30">30</option>
+    <option value="40">40</option>
+</select>
+
+
+2. При выборе соответствующего option осуществить вывод
+    пользователей соответствующих выбранному возрасту
+    в элемент <div id="res"></div>
+То есть при выборе например 20 должны вывестись  John, Ashley, Willy
+*/
+
+
+const usersSelect = document.getElementById('users-select')
+const res = document.getElementById('res')
+
+let users = [
+ {id: 1, name: "John", age: "20"},
+ {id: 2, name: "Sasha", age: "30"},
+ {id: 3, name: "Bill", age: "40"},
+ {id: 4, name: "Ashley", age: "20"},
+ {id: 5, name: "Rachel", age: "40"},
+ {id: 6, name: "Tom", age: "30"},
+ {id: 7, name: "Steve", age: "30"},
+ {id: 8, name: "Jim", age: "40"},
+ {id: 9, name: "Willy", age: "20"}
+]
+
+//Вывод возрастов в select
+const ages = users.reduce((acc, item)=>{
+    let age = Number(item.age);
+    if(!acc.includes(age)){
+        acc.push(age);
+        let newOption = new Option(age, age);
+        usersSelect.append(newOption);
+    }
+    return acc;
+},[]);
+
+//Вывод пользователей соответствующих выбранному возрасту в элемент <div id="res"></div>
+usersSelect.onchange = ()=>{
+    let indexSelected = usersSelect.selectedIndex;
+    let option = usersSelect.querySelectorAll('option')[indexSelected];
+    let optionValue = option.getAttribute('value');
+    res.innerHTML = '';
+
+    users.reduce((acc, item)=>{
+        if(optionValue == item.age){
+            res.innerHTML += '<p>'+item.name+'</p>';
+        }
+    },[])
+}
+
+</script>
+
+
+</body>
+</html>
