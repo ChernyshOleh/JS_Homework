@@ -28,17 +28,34 @@
                 )
         }
 
-        function UserList({users}){
+        function UserList({users, searchText}){
+            const filteredUsers = [];
+
+            users.forEach(user => {
+                if (user.name.toLowerCase().includes(searchText.toLowerCase())) {
+                    filteredUsers.push(user);
+                }
+            })
+
             return(
                     <div>
                         <h1>User list:</h1>
-                        <div>{users.map(item => <User key={item.id} user={item}/>)}</div>
+                        <div>{filteredUsers.map(item => <User key={item.id} user={item}/>)}</div>
                     </div>
                 )
         }
 
+        function Search({setText}){
+            return(
+                <div>
+                    <input type="text" onChange={e => setText(e.target.value)}/>
+                </div>
+            )
+        }
+
         function App(){
             const[users, setUsers] = React.useState([]);
+            const[searchText, setText] = React.useState('');
 
             React.useEffect(async() => {
                 let response = await fetch("https://jsonplaceholder.typicode.com/users");
@@ -48,7 +65,8 @@
             
             return(
                 <div>
-                    <UserList users={users}/>
+                    <Search setText={setText}/>
+                    <UserList users={users} searchText={searchText}/>
                 </div>
             )
         }
@@ -61,10 +79,14 @@
         });
 
         UserList.propTypes = {
-            users: PropTypes.arrayOf(userShape)
+            users: PropTypes.arrayOf(userShape),
+            searchText: PropTypes.string.isRequired
         }
         User.propTypes = {
             user: userShape
+        }
+        Search.propTypes = {
+            setText: PropTypes.func.isRequired
         }
 
         ReactDOM.render(<App />, root);
